@@ -8,6 +8,8 @@ default:
     
 stages:
   - unit_tests
+  - build_image
+  - push_image
 
 unit_tests:
   stage: unit_tests
@@ -15,6 +17,26 @@ unit_tests:
   script: 
     - cd spring
     - mvn test
+
+build_image:
+  stage: build_image
+  services:
+    - name: docker:18-dind
+  dependencies:
+    - unit_tests
+  script: 
+    - cd spring
+    - docker build -t ibains007/notejam::"$CI_COMMIT_SHORT_SHA" .
+
+push_image:
+  stage: push_image
+  services:
+    - name: docker:18-dind
+  dependencies:
+    - build_image
+  script: 
+    - docker login -u $user -p $pass
+    - docker push ibains007/notejam::"$CI_COMMIT_SHORT_SHA"
 
 
 
