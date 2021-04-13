@@ -1,0 +1,20 @@
+default:
+  image: ibains007/docker-cli:latest
+  services:
+    - name: docker:18-dind
+      entrypoint:
+      - '/usr/bin/env'
+      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+    
+stages:
+  - unit_tests
+
+unit_tests:
+  stage: unit_test
+  image: maven:3.8-openjdk-8-slim 
+  script: 
+    - cd spring
+    - mvn test
+
+
+
